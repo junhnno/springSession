@@ -9,15 +9,17 @@ public class PostSummaryResponse {
 
     private final Long id;
     private final String title;
+    private final String authorNickname;
     private final LocalDateTime createdAt;
 
     public PostSummaryResponse(
             Long id,
-            String title,
+            String title, String authorNickname,
             LocalDateTime createdAt
     ) {
         this.id = id;
         this.title = title;
+        this.authorNickname = authorNickname;
         this.createdAt = createdAt;
     }
 

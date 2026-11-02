@@ -1,6 +1,7 @@
 package com.likelion.springsession.post.entity;
 
 import com.likelion.springsession.comment.entity.Comment;
+import com.likelion.springsession.user.entity.User;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -20,6 +21,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "posts")
 public class Post {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,12 +35,21 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
+    @ManyToOne(fetch = FetchType.LAZY)              // ← 추가
+    @JoinColumn(name = "author_id", nullable = false)
+    private User author;
+
     // 생성자 추가 - 사용자의 임의 변경을 할 수 없도록
     // lombok을 통해 다른 애들은 다 생성자를 없앴는데 얘는 왜 따로 작성했는가?
-    public Post(String title, String content) {
+    public Post(User author, String title, String content) {
+        this.author = author;
         this.title = title;
         this.content = content;
         this.createdAt = LocalDateTime.now();
+    }
+
+    public boolean isAuthor(Long userId) {          // ← 추가
+        return this.author.getId().equals(userId);
     }
 
     public void update(String title, String content) {
